@@ -16,6 +16,11 @@ namespace Res_ManagementSystem.DAO
                                                     TrustServerCertificate=False;
                                                     ApplicationIntent=ReadWrite;
                                                     MultiSubnetFailover=False";
+                                                    
+        public SqlConnection getConnection
+        {
+            get { return con; }
+        }                                       
 
         public static DataTable ExecuteQuery(String sql)
         {
