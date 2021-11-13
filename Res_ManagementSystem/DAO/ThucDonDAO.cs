@@ -1,7 +1,8 @@
-﻿using Res_ManagementSystem.DTO;
+using Res_ManagementSystem.DTO;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,22 +13,78 @@ namespace Res_ManagementSystem.DAO
     {
         public static bool ThemThucDon(ThucDonDTO td)
         {
-            string sql = string.Format("insert into QLYQUANNHAU.[dbo].[ThucDon] values ({0}, {1}, '{2}', '{3}')", td.MaTD, td.MaLoai, td.TenTD, td.DonViTinh);
+            /*string sql = string.Format("insert into QLYQUANNHAU.[dbo].[ThucDon] values ({0}, {1}, '{2}', '{3}')", td.MaTD, td.MaLoai, td.TenTD, td.DonViTinh);
             bool kq = DataProvider.ExecuteNonQuery(sql);
+            return kq;*/
+            bool kq;
+            string sql = string.Format("QLYQUANNHAU.[dbo].[ThemThucDon]");
+            SqlConnection connect = new SqlConnection(DataProvider.connectionString());
+            connect.Open();
+            SqlCommand command = connect.CreateCommand();
+            command.CommandText = sql;
+            command.Parameters.AddWithValue("@MaTD", td.MaTD);
+            command.Parameters.AddWithValue("@MaLoai", td.MaLoai);
+            command.Parameters.AddWithValue("@TenTD", td.TenTD);
+            command.Parameters.AddWithValue("@DVT", td.DonViTinh);
+            command.CommandType = CommandType.StoredProcedure;
+            int n = command.ExecuteNonQuery();
+            if (n > 0)
+            {
+                kq = true;
+            }
+            else
+            {
+                kq = false;
+            }
             return kq;
         }
-
         public static bool XoaThucDonTheoMaTD(int maTD)
         {
-            string sql = "delete QLYQUANNHAU.[dbo].[ThucDon] where MaThucDon = " + maTD;
+            /*string sql = "delete QLYQUANNHAU.[dbo].[ThucDon] where MaThucDon = " + maTD;
             bool kq = DataProvider.ExecuteNonQuery(sql);
+            return kq;*/
+            bool kq;
+            string sql = string.Format("QLYQUANNHAU.[dbo].[XoaThucDonTheoMaTD]");
+            SqlConnection connect = new SqlConnection(DataProvider.connectionString());
+            connect.Open();
+            SqlCommand command = connect.CreateCommand();
+            command.CommandText = sql;
+            command.Parameters.AddWithValue("@MaTD", maTD);
+            command.CommandType = CommandType.StoredProcedure;
+            int n = command.ExecuteNonQuery();
+            if (n > 0)
+            {
+                kq = true;
+            }
+            else
+            {
+                kq = false;
+            }
             return kq;
         }
 
         public static bool CapNhatThucDon(ThucDonDTO td)
         {
-            string sql = string.Format("update QLYQUANNHAU.[dbo].[ThucDon] set MaLoai = {0}, TenThucDon = N'{1}', DonViTinh = N'{2}' where MaThucDon = {3}", td.MaLoai, td.TenTD, td.DonViTinh, td.MaTD);
-            bool kq = DataProvider.ExecuteNonQuery(sql);
+            bool kq;
+            string sql = string.Format("QLYQUANNHAU.[dbo].[CapNhatThucDon]");
+            SqlConnection connect = new SqlConnection(DataProvider.connectionString());
+            connect.Open();
+            SqlCommand command = connect.CreateCommand();
+            command.CommandText = sql;
+            command.Parameters.AddWithValue("@MaTD", td.MaTD);
+            command.Parameters.AddWithValue("@MaLoai", td.MaLoai);
+            command.Parameters.AddWithValue("@TenTD", td.TenTD);
+            command.Parameters.AddWithValue("@DVT", td.DonViTinh);
+            command.CommandType = CommandType.StoredProcedure;
+            int n = command.ExecuteNonQuery();
+            if (n > 0)
+            {
+                kq = true;
+            }
+            else
+            {
+                kq = false;
+            }
             return kq;
         }
 
@@ -35,8 +92,16 @@ namespace Res_ManagementSystem.DAO
         public static List<ThucDonDTO> LayDSThucDon()
         {
             List<ThucDonDTO> _ds = new List<ThucDonDTO>();
-            string sql = "select * from QLYQUANNHAU.[dbo].[ThucDon]";
-            DataTable dt = DataProvider.ExecuteQuery(sql);
+            DataTable dt = new DataTable();
+            SqlConnection connect = new SqlConnection(DataProvider.connectionString());
+            connect.Open();
+            SqlCommand command = connect.CreateCommand();
+            command.CommandText = "QLYQUANNHAU.[dbo].[LayDSThucDon]";
+            command.CommandType = CommandType.StoredProcedure;
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            adapter.SelectCommand = command;
+            adapter.Fill(dt);
+            connect.Close();
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 ThucDonDTO td = new ThucDonDTO();
