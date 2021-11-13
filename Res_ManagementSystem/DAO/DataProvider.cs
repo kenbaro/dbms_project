@@ -17,10 +17,10 @@ namespace Res_ManagementSystem.DAO
                                                     ApplicationIntent=ReadWrite;
                                                     MultiSubnetFailover=False";
                                                     
-        public SqlConnection getConnection
+           public static String connectionString()
         {
-            get { return con; }
-        }                                       
+            return _connectionString;
+        }                               
 
         public static DataTable ExecuteQuery(String sql)
         {
